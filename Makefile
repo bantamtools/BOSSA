@@ -11,8 +11,8 @@ WXVERSION=3.0
 #
 COMMON_SRCS=Samba.cpp Flash.cpp NvmFlash.cpp EfcFlash.cpp EefcFlash.cpp FlashFactory.cpp Applet.cpp WordCopyApplet.cpp Flasher.cpp
 APPLET_SRCS=WordCopyArm.asm
-BOSSA_SRCS=BossaForm.cpp BossaWindow.cpp BossaAbout.cpp BossaApp.cpp BossaBitmaps.cpp BossaInfo.cpp BossaThread.cpp BossaProgress.cpp
-BOSSA_BMPS=BossaLogo.bmp BossaIcon.bmp ShumaTechLogo.bmp
+#BOSSA_SRCS=BossaForm.cpp BossaWindow.cpp BossaAbout.cpp BossaApp.cpp BossaBitmaps.cpp BossaInfo.cpp BossaThread.cpp BossaProgress.cpp
+#BOSSA_BMPS=BossaLogo.bmp BossaIcon.bmp ShumaTechLogo.bmp
 BOSSAC_SRCS=bossac.cpp CmdOpts.cpp
 BOSSASH_SRCS=bossash.cpp Shell.cpp Command.cpp
 
@@ -79,8 +79,8 @@ endif
 #
 ifeq ($(OS),Darwin)
 COMMON_SRCS+=PosixSerialPort.cpp OSXPortFactory.cpp
-COMMON_CXXFLAGS=-arch i386 -arch x86_64 -mmacosx-version-min=10.5
-COMMON_LDFLAGS=-arch i386 -arch x86_64 -mmacosx-version-min=10.5
+COMMON_CXXFLAGS=-arch x86_64 -mmacosx-version-min=10.5
+COMMON_LDFLAGS=-arch x86_64 -mmacosx-version-min=10.5
 APP=BOSSA.app
 DMG=bossa-$(VERSION).dmg
 VOLUME=BOSSA
@@ -114,10 +114,10 @@ endif
 #
 COMMON_OBJS=$(foreach src,$(COMMON_SRCS),$(OBJDIR)/$(src:%.cpp=%.o))
 APPLET_OBJS=$(foreach src,$(APPLET_SRCS),$(OBJDIR)/$(src:%.asm=%.o))
-BOSSA_OBJS=$(APPLET_OBJS) $(COMMON_OBJS) $(foreach src,$(BOSSA_SRCS),$(OBJDIR)/$(src:%.cpp=%.o))
-ifdef BOSSA_RC
-BOSSA_OBJS+=$(OBJDIR)/$(BOSSA_RC:%.rc=%.o)
-endif
+#BOSSA_OBJS=$(APPLET_OBJS) $(COMMON_OBJS) $(foreach src,$(BOSSA_SRCS),$(OBJDIR)/$(src:%.cpp=%.o))
+#ifdef BOSSA_RC
+#BOSSA_OBJS+=$(OBJDIR)/$(BOSSA_RC:%.rc=%.o)
+#endif
 BOSSAC_OBJS=$(APPLET_OBJS) $(COMMON_OBJS) $(foreach src,$(BOSSAC_SRCS),$(OBJDIR)/$(src:%.cpp=%.o))
 BOSSASH_OBJS=$(APPLET_OBJS) $(COMMON_OBJS) $(foreach src,$(BOSSASH_SRCS),$(OBJDIR)/$(src:%.cpp=%.o))
 
@@ -126,7 +126,7 @@ BOSSASH_OBJS=$(APPLET_OBJS) $(COMMON_OBJS) $(foreach src,$(BOSSASH_SRCS),$(OBJDI
 #
 DEPENDS=$(COMMON_SRCS:%.cpp=$(OBJDIR)/%.d) 
 DEPENDS+=$(APPLET_SRCS:%.asm=$(OBJDIR)/%.d) 
-DEPENDS+=$(BOSSA_SRCS:%.cpp=$(OBJDIR)/%.d) 
+#DEPENDS+=$(BOSSA_SRCS:%.cpp=$(OBJDIR)/%.d) 
 DEPENDS+=$(BOSSAC_SRCS:%.cpp=$(OBJDIR)/%.d) 
 DEPENDS+=$(BOSSASH_SRCS:%.cpp=$(OBJDIR)/%.d) 
 
@@ -143,8 +143,8 @@ ARMOBJCOPY=$(ARM)objcopy
 # CXX Flags
 #
 COMMON_CXXFLAGS+=-Wall -Werror -MT $@ -MD -MP -MF $(@:%.o=%.d) -DVERSION=\"$(VERSION)\" -g -O2
-WX_CXXFLAGS:=$(shell wx-config --cxxflags --version=$(WXVERSION)) -DWX_PRECOMP -Wno-ctor-dtor-privacy -O2 -fno-strict-aliasing
-BOSSA_CXXFLAGS=$(COMMON_CXXFLAGS) $(WX_CXXFLAGS) 
+#WX_CXXFLAGS:=$(shell wx-config --cxxflags --version=$(WXVERSION)) -DWX_PRECOMP -Wno-ctor-dtor-privacy -O2 -fno-strict-aliasing
+#BOSSA_CXXFLAGS=$(COMMON_CXXFLAGS) $(WX_CXXFLAGS) 
 BOSSAC_CXXFLAGS=$(COMMON_CXXFLAGS)
 BOSSASH_CXXFLAGS=$(COMMON_CXXFLAGS)
 
@@ -160,15 +160,16 @@ BOSSASH_LDFLAGS=$(COMMON_LDFLAGS)
 # Libs
 #
 COMMON_LIBS+=
-WX_LIBS:=$(shell wx-config --libs --version=$(WXVERSION)) $(WX_LIBS)
-BOSSA_LIBS=$(COMMON_LIBS) $(WX_LIBS)
+#WX_LIBS:=$(shell wx-config --libs --version=$(WXVERSION)) $(WX_LIBS)
+#BOSSA_LIBS=$(COMMON_LIBS) $(WX_LIBS)
 BOSSAC_LIBS=$(COMMON_LIBS)
 BOSSASH_LIBS=-lreadline $(COMMON_LIBS)
 
 #
 # Main targets
 #
-all: $(BINDIR)/bossa$(EXE) $(BINDIR)/bossac$(EXE) $(BINDIR)/bossash$(EXE)
+#all: $(BINDIR)/bossa$(EXE) $(BINDIR)/bossac$(EXE) $(BINDIR)/bossash$(EXE)
+all: $(BINDIR)/bossac$(EXE) $(BINDIR)/bossash$(EXE)
 
 #
 # Common rules
@@ -198,12 +199,12 @@ $(foreach src,$(APPLET_SRCS),$(eval $(call applet_obj,$(src))))
 #
 # BOSSA rules
 #
-define bossa_obj
-$(OBJDIR)/$(1:%.cpp=%.o): $(SRCDIR)/$(1)
-	@echo CPP BOSSA $$<
-	$$(Q)$$(CXX) $$(BOSSA_CXXFLAGS) -c -o $$@ $$<
-endef
-$(foreach src,$(BOSSA_SRCS),$(eval $(call bossa_obj,$(src))))
+#define bossa_obj
+#$(OBJDIR)/$(1:%.cpp=%.o): $(SRCDIR)/$(1)
+#	@echo CPP BOSSA $$<
+#	$$(Q)$$(CXX) $$(BOSSA_CXXFLAGS) -c -o $$@ $$<
+#endef
+#$(foreach src,$(BOSSA_SRCS),$(eval $(call bossa_obj,$(src))))
 
 #
 # Resource rules
@@ -256,10 +257,10 @@ $(BINDIR):
 #
 # Target rules
 #
-$(BOSSA_OBJS): | $(OBJDIR)
-$(BINDIR)/bossa$(EXE): $(foreach bmp,$(BOSSA_BMPS),$(SRCDIR)/$(bmp:%.bmp=%.cpp)) $(BOSSA_OBJS) | $(BINDIR)
-	@echo LD $@
-	$(Q)$(CXX) $(BOSSA_LDFLAGS) -o $@ $(BOSSA_OBJS) $(BOSSA_LIBS)
+#$(BOSSA_OBJS): | $(OBJDIR)
+#$(BINDIR)/bossa$(EXE): $(foreach bmp,$(BOSSA_BMPS),$(SRCDIR)/$(bmp:%.bmp=%.cpp)) $(BOSSA_OBJS) | $(BINDIR)
+#	@echo LD $@
+#	$(Q)$(CXX) $(BOSSA_LDFLAGS) -o $@ $(BOSSA_OBJS) $(BOSSA_LIBS)
 
 $(BOSSAC_OBJS): | $(OBJDIR)
 $(BINDIR)/bossac$(EXE): $(BOSSAC_OBJS) | $(BINDIR)
