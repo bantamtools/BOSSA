@@ -33,7 +33,7 @@ OS:=$(shell uname -s | cut -c -7)
 #
 # Windows rules
 #
-ifeq ($(OS),MINGW32)
+ifneq (,$(filter $(OS),MINGW32 MINGW64))
 EXE=.exe
 COMMON_SRCS+=WinSerialPort.cpp WinPortFactory.cpp
 COMMON_LDFLAGS=-Wl,--enable-auto-import -static -static-libstdc++ -static-libgcc
