@@ -67,8 +67,6 @@ Samba::init()
 
     _port->timeout(TIMEOUT_QUICK);
 
-    // Allows Arduino auto-reset
-    usleep(500000);
     // Flush garbage
     uint8_t dummy[1024];
     _port->read(dummy, 1024);
