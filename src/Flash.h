@@ -127,7 +127,7 @@ public:
     virtual void writePage(uint32_t page) = 0;
     virtual void readPage(uint32_t page, uint8_t* data) = 0;
 
-    typedef std::auto_ptr<Flash> Ptr;
+    typedef std::unique_ptr<Flash> Ptr;
 
 protected:
     Samba& _samba;

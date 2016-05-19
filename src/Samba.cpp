@@ -155,9 +155,9 @@ Samba::init()
 }
 
 bool
-Samba::connect(SerialPort::Ptr port, int bps)
+Samba::connect(SerialPort::Ptr&& port, int bps)
 {
-    _port = port;
+    _port = std::move(port);
 
     // Try to connect at a high speed if USB
     _isUsb = _port->isUsb();
