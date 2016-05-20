@@ -61,21 +61,21 @@ public:
 
     bool getBod();
     void setBod(bool enable);
-    bool canBod() { return true; }
+    bool canBod() const { return true; }
 
     bool getBor();
     void setBor(bool enable);
-    bool canBor() { return true; }
+    bool canBor() const { return true; }
 
     bool getBootFlash();
     void setBootFlash(bool enable);
-    bool canBootFlash() { return _canBootFlash; }
+    bool canBootFlash() const { return _canBootFlash; }
 
     void writePage(uint32_t page);
     void readPage(uint32_t page, uint8_t* data);
 
 private:
-    bool _canBootFlash;
+    const bool _canBootFlash;
 
     void waitFSR();
     void writeFCR0(uint8_t cmd, uint32_t arg);

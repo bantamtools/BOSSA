@@ -275,7 +275,7 @@ Samba::readWord(uint32_t addr)
 }
 
 uint16_t
-Samba::crc16Calc(const uint8_t *data, int len)
+Samba::crc16Calc(const uint8_t *data, int len) const
 {
     static const uint16_t crc16Table[256] = {
         0x0000,0x1021,0x2042,0x3063,0x4084,0x50a5,0x60c6,0x70e7,
@@ -319,7 +319,7 @@ Samba::crc16Calc(const uint8_t *data, int len)
 }
 
 bool
-Samba::crc16Check(const uint8_t *blk)
+Samba::crc16Check(const uint8_t *blk) const
 {
     uint16_t crc16;
 
@@ -328,7 +328,7 @@ Samba::crc16Check(const uint8_t *blk)
 }
 
 void
-Samba::crc16Add(uint8_t *blk)
+Samba::crc16Add(uint8_t *blk) const
 {
     uint16_t crc16;
 

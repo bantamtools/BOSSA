@@ -40,7 +40,9 @@ Flash::Flash(Samba& samba,
              uint32_t user,
              uint32_t stack)
     : _samba(samba), _name(name), _addr(addr), _pages(pages), _size(size),
-      _planes(planes), _lockRegions(lockRegions), _user(user), _wordCopy(samba, user)
+      _planes(planes), _lockRegions(lockRegions), _user(user), _wordCopy(samba, user),
+      _pageBufferA(_user + _wordCopy.size()),
+      _pageBufferB(_pageBufferA + size)
 {
     assert((size & (size - 1)) == 0);
     assert((pages & (pages - 1)) == 0);
@@ -50,8 +52,6 @@ Flash::Flash(Samba& samba,
     _wordCopy.setStack(stack);
 
     _onBufferA = true;
-    _pageBufferA = _user + _wordCopy.size();
-    _pageBufferB = _pageBufferA + size;
 }
 
 void

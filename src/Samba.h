@@ -82,9 +82,9 @@ private:
 
     bool init();
 
-    uint16_t crc16Calc(const uint8_t *data, int len);
-    bool crc16Check(const uint8_t *blk);
-    void crc16Add(uint8_t *blk);
+    uint16_t crc16Calc(const uint8_t *data, int len) const;
+    bool crc16Check(const uint8_t *blk) const;
+    void crc16Add(uint8_t *blk) const;
     void writeXmodem(const uint8_t* buffer, int size);
     void readXmodem(uint8_t* buffer, int size);
 

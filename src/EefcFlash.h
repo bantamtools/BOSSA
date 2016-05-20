@@ -62,22 +62,22 @@ public:
 
     bool getBod();
     void setBod(bool enable);
-    bool canBod() { return _canBrownout; }
+    bool canBod() const { return _canBrownout; }
 
     bool getBor();
     void setBor(bool enable);
-    bool canBor() { return _canBrownout; }
+    bool canBor() const { return _canBrownout; }
 
     bool getBootFlash();
     void setBootFlash(bool enable);
-    bool canBootFlash() { return true; }
+    bool canBootFlash() const { return true; }
 
     void writePage(uint32_t page);
     void readPage(uint32_t page, uint8_t* data);
 
 private:
-    uint32_t _regs;
-    bool _canBrownout;
+    const uint32_t _regs;
+    const bool _canBrownout;
     bool _eraseAuto;
 
     void waitFSR();

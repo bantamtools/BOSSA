@@ -86,22 +86,22 @@ public:
           uint32_t stack);
     virtual ~Flash() {}
 
-    const std::string& name() { return _name; }
+    const std::string& name() const { return _name; }
 
-    virtual uint32_t address() { return _addr; }
-    virtual uint32_t pageSize() { return _size; }
-    virtual uint32_t numPages() { return _pages; }
-    virtual uint32_t numPlanes() { return _planes; }
+    virtual uint32_t address() const { return _addr; }
+    virtual uint32_t pageSize() const { return _size; }
+    virtual uint32_t numPages() const { return _pages; }
+    virtual uint32_t numPlanes() const { return _planes; }
 
     // Usually all the bootloaders are in ROM and the application is flashed
     // in page 0. But for some types of Flash, it could be different and will
     // be overrided in the derived class
-    virtual uint16_t appStartPage() { return 0; }
+    virtual uint16_t appStartPage() const { return 0; }
 
     virtual void eraseAll() = 0;
     virtual void eraseAuto(bool enable) = 0;
 
-    virtual uint32_t lockRegions() { return _lockRegions; }
+    virtual uint32_t lockRegions() const { return _lockRegions; }
     virtual bool isLocked() = 0;
     virtual bool getLockRegion(uint32_t region) = 0;
     virtual void setLockRegion(uint32_t region, bool enable) = 0;
@@ -113,15 +113,15 @@ public:
 
     virtual bool getBod() = 0;
     virtual void setBod(bool enable) = 0;
-    virtual bool canBod() = 0;
+    virtual bool canBod() const = 0;
 
     virtual bool getBor() = 0;
     virtual void setBor(bool enable) = 0;
-    virtual bool canBor() = 0;
+    virtual bool canBor() const = 0;
 
     virtual bool getBootFlash() = 0;
     virtual void setBootFlash(bool enable) = 0;
-    virtual bool canBootFlash() = 0;
+    virtual bool canBootFlash() const = 0;
 
     virtual void loadBuffer(const uint8_t* data, uint16_t size);
     virtual void writePage(uint32_t page) = 0;
@@ -131,18 +131,18 @@ public:
 
 protected:
     Samba& _samba;
-    std::string _name;
-    uint32_t _addr;
-    uint32_t _pages;
-    uint32_t _size;
-    uint32_t _planes;
-    uint32_t _lockRegions;
-    uint32_t _user;
+    const std::string _name;
+    const uint32_t _addr;
+    const uint32_t _pages;
+    const uint32_t _size;
+    const uint32_t _planes;
+    const uint32_t _lockRegions;
+    const uint32_t _user;
     WordCopyApplet _wordCopy;
 
     bool _onBufferA;
-    uint32_t _pageBufferA;
-    uint32_t _pageBufferB;
+    const uint32_t _pageBufferA;
+    const uint32_t _pageBufferB;
 };
 
 #endif // _FLASH_H

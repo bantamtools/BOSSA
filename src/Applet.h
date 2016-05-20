@@ -45,8 +45,8 @@ public:
            uint32_t reset);
     virtual ~Applet() {}
 
-    virtual uint32_t size() { return _size; }
-    virtual uint32_t addr() { return _addr; }
+    virtual uint32_t size() const { return _size; }
+    virtual uint32_t addr() const { return _addr; }
 
     virtual void setStack(uint32_t stack);
 
