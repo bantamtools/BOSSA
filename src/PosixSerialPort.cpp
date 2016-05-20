@@ -275,3 +275,9 @@ PosixSerialPort::setAutoFlush(bool autoflush)
 {
     _autoFlush = autoflush;
 }
+
+void
+PosixSerialPort::clear()
+{
+    tcflush(_devfd, TCIOFLUSH);
+}

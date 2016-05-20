@@ -52,6 +52,7 @@ public:
 
     bool timeout(int millisecs);
     void flush();
+    void clear();
     void setAutoFlush(bool autoflush);
     void setAutoClose(bool autoclose);
 
