@@ -77,7 +77,6 @@ public:
 
 private:
     bool _debug;
-    bool _isUsb;
     SerialPort::Ptr _port;
 
     bool init();

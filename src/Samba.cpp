@@ -33,6 +33,7 @@
 #include <stdint.h>
 #include <ctype.h>
 #include <unistd.h>
+#include <QtCore/QObject>
 
 using namespace std;
 
@@ -51,7 +52,7 @@ using namespace std;
 
 #define min(a, b)   ((a) < (b) ? (a) : (b))
 
-Samba::Samba() : _debug(false), _isUsb(false)
+Samba::Samba() : _debug(false)
 {
 }
 
@@ -68,22 +69,7 @@ Samba::init()
     _port->timeout(TIMEOUT_QUICK);
 
     // Flush garbage
-    uint8_t dummy[1024];
-    _port->read(dummy, 1024);
-
-    if (!_isUsb)
-    {
-        if (_debug)
-            printf("Send auto-baud\n");
-
-        // RS-232 auto-baud sequence
-        _port->put(0x80);
-        _port->get();
-        _port->put(0x80);
-        _port->get();
-        _port->put('#');
-        _port->read(cmd, 3);
-    }
+    _port->clear();
 
     // Set binary mode
     if (_debug)
@@ -160,20 +146,10 @@ Samba::connect(SerialPort::Ptr&& port, int bps)
     _port = std::move(port);
 
     // Try to connect at a high speed if USB
-    _isUsb = _port->isUsb();
-    if (_isUsb && _port->open(921600) && init())
+    if (_port->open(115200) && init())
     {
         if (_debug)
             printf("Connected at 921600 baud\n");
-        return true;
-    }
-    _isUsb = false;
-
-    // Try the serial port at slower speed
-    if (_port->open(bps) && init())
-    {
-        if (_debug)
-            printf("Connected at %d baud\n", bps);
         return true;
     }
 
@@ -206,8 +182,7 @@ Samba::writeByte(uint32_t addr, uint8_t value)
     // USB drivers often do write combining which can put them together
     // in the same USB data packet.  To avoid this, we call the serial
     // port object's flush method before writing the data.
-    if (_isUsb)
-        _port->flush();
+    _port->flush();
 }
 
 uint8_t
@@ -215,6 +190,7 @@ Samba::readByte(uint32_t addr)
 {
     uint8_t cmd[13];
     uint8_t value;
+    //Q_ASSERT(addr < 0x20080000 && addr >= 0x20000000);
 
     snprintf((char*) cmd, sizeof(cmd), "o%08X,4#", addr);
     if (_port->write(cmd, sizeof(cmd) - 1) != sizeof(cmd) - 1)
@@ -249,8 +225,7 @@ Samba::writeWord(uint32_t addr, uint32_t value)
     // USB drivers often do write combining which can put them together
     // in the same USB data packet.  To avoid this, we call the serial
     // port object's flush method before writing the data.
-    if (_isUsb)
-        _port->flush();
+    _port->flush();
 }
 
 
@@ -465,7 +440,7 @@ Samba::read(uint32_t addr, uint8_t* buffer, int size)
     // The SAM firmware has a bug reading powers of 2 over 32 bytes
     // via USB.  If that is the case here, then read the first byte
     // with a readByte and then read one less than the requested size.
-    if (_isUsb && size > 32 && !(size & (size - 1)))
+    if (size > 32 && !(size & (size - 1)))
     {
         *buffer = readByte(addr);
         addr++;
@@ -477,10 +452,7 @@ Samba::read(uint32_t addr, uint8_t* buffer, int size)
     if (_port->write(cmd, sizeof(cmd) - 1) != sizeof(cmd) - 1)
         throw SambaError();
 
-    if (_isUsb)
-        readBinary(buffer, size);
-    else
-        readXmodem(buffer, size);
+    readBinary(buffer, size);
 }
 
 void
@@ -501,15 +473,8 @@ Samba::write(uint32_t addr, const uint8_t* buffer, int size)
     // USB drivers often do write combining which can put them together
     // in the same USB data packet.  To avoid this, we call the serial
     // port object's flush method before writing the data.
-    if (_isUsb)
-    {
-        _port->flush();
-        writeBinary(buffer, size);
-    }
-    else
-    {
-        writeXmodem(buffer, size);
-    }
+    _port->flush();
+    writeBinary(buffer, size);
 }
 
 void
@@ -527,8 +492,7 @@ Samba::go(uint32_t addr)
     // The SAM firmware can get confused if another command is
     // received in the same USB data packet as the go command
     // so we flush after writing the command over USB.
-    if (_isUsb)
-        _port->flush();
+    _port->flush();
 }
 
 std::string
