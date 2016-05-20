@@ -140,9 +140,7 @@ protected:
     const uint32_t _user;
     WordCopyApplet _wordCopy;
 
-    bool _onBufferA;
-    const uint32_t _pageBufferA;
-    const uint32_t _pageBufferB;
+    const uint32_t _pageBufferAddress;
 };
 
 #endif // _FLASH_H

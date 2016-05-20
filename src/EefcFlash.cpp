@@ -257,8 +257,7 @@ EefcFlash::writePage(uint32_t page)
         throw FlashPageError();
 
     _wordCopy.setDstAddr(_addr + page * _size);
-    _wordCopy.setSrcAddr(_onBufferA ? _pageBufferA : _pageBufferB);
-    _onBufferA = !_onBufferA;
+    _wordCopy.setSrcAddr(_pageBufferAddress);
     waitFSR();
     _wordCopy.runv();
     if (_planes == 2 && page >= _pages / 2)
@@ -276,11 +275,11 @@ EefcFlash::readPage(uint32_t page, uint8_t* data)
     // The SAM3 firmware has a bug where it returns all zeros for reads
     // directly from the flash so instead, we copy the flash page to
     // SRAM and read it from there.
-    _wordCopy.setDstAddr(_onBufferA ? _pageBufferA : _pageBufferB);
+    _wordCopy.setDstAddr(_pageBufferAddress);
     _wordCopy.setSrcAddr(_addr + page * _size);
     waitFSR();
     _wordCopy.runv();
-    _samba.read(_onBufferA ? _pageBufferA : _pageBufferB, data, _size);
+    _samba.read(_pageBufferAddress, data, _size);
 }
 
 void

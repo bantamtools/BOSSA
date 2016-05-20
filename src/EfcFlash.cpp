@@ -222,8 +222,7 @@ EfcFlash::writePage(uint32_t page)
         throw FlashPageError();
 
     _wordCopy.setDstAddr(_addr + page * _size);
-    _wordCopy.setSrcAddr(_onBufferA ? _pageBufferA : _pageBufferB);
-    _onBufferA = !_onBufferA;
+    _wordCopy.setSrcAddr(_pageBufferAddress);
     waitFSR();
     _wordCopy.run();
     if (_planes == 2 && page >= _pages / 2)
