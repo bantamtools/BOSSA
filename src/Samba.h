@@ -48,10 +48,10 @@ public:
 class Samba
 {
 public:
-    Samba();
+    Samba(const SerialPort::Ptr& port);
     virtual ~Samba();
 
-    bool connect(SerialPort::Ptr&& port, int bps=115200);
+    bool connect();
     void disconnect();
 
     void writeByte(uint32_t addr, uint8_t value);
@@ -77,7 +77,7 @@ public:
 
 private:
     bool _debug;
-    SerialPort::Ptr _port;
+    const SerialPort::Ptr& _port;
 
     bool init();
 

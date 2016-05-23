@@ -52,7 +52,7 @@ using namespace std;
 
 #define min(a, b)   ((a) < (b) ? (a) : (b))
 
-Samba::Samba() : _debug(false)
+Samba::Samba(const SerialPort::Ptr& port) : _debug(false), _port(port)
 {
 }
 
@@ -141,15 +141,13 @@ Samba::init()
 }
 
 bool
-Samba::connect(SerialPort::Ptr&& port, int bps)
+Samba::connect()
 {
-    _port = std::move(port);
-
     // Try to connect at a high speed if USB
     if (_port->open(115200) && init())
     {
         if (_debug)
-            printf("Connected at 921600 baud\n");
+            printf("Connected at 115200 baud\n");
         return true;
     }
 
@@ -161,7 +159,6 @@ void
 Samba::disconnect()
 {
     _port->close();
-    _port.release();
 }
 
 void
