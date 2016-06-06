@@ -55,6 +55,7 @@ public:
 
     bool timeout(int millisecs);
     void flush();
+    void clear();
 
 private:
     HANDLE _handle;

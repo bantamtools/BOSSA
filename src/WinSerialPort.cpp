@@ -78,7 +78,8 @@ WinSerialPort::open(int baud, int data, SerialPort::Parity parity, SerialPort::S
         return false;
 
     std::string device = "\\\\.\\" + _name;
-    _handle = CreateFile(device.c_str(),
+    std::wstring wdevice(device.begin(), device.end());
+    _handle = CreateFile(wdevice.c_str(),
                          GENERIC_READ | GENERIC_WRITE,
                          0,
                          0,
@@ -249,5 +250,11 @@ WinSerialPort::put(int c)
 void
 WinSerialPort::flush()
 {
-    Sleep(1);
+    PurgeComm(_handle, PURGE_RXCLEAR | PURGE_TXCLEAR);
+}
+
+void
+WinSerialPort::clear()
+{
+    PurgeComm(_handle, PURGE_RXABORT | PURGE_TXABORT);
 }
