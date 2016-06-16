@@ -472,6 +472,9 @@ Samba::write(uint32_t addr, const uint8_t* buffer, int size)
     // port object's flush method before writing the data.
     _port->flush();
     writeBinary(buffer, size);
+    // We also flush after writing the data, to avoid interfering with
+    // subsequent commands.
+    _port->flush();
 }
 
 void
