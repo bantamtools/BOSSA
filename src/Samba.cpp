@@ -33,7 +33,6 @@
 #include <stdint.h>
 #include <ctype.h>
 #include <unistd.h>
-#include <QtCore/QObject>
 
 using namespace std;
 
