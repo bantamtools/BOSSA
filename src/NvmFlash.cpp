@@ -296,7 +296,7 @@ NvmFlash::getBootFlash()
 }
 
 void
-NvmFlash::setBootFlash(bool enable)
+NvmFlash::setBootFlash(bool /*enable*/)
 {
     printf("Ignoring set boot from flash flag.\n");
 }
