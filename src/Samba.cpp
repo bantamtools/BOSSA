@@ -83,7 +83,7 @@ Samba::init()
     {
         cid = chipId();
     }
-    catch (SambaError)
+    catch (SambaError&)
     {
         return false;
     }
